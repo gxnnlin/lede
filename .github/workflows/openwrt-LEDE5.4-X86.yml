@@ -417,6 +417,7 @@ jobs:
         echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
         touch release.txt
         echo "[固件源码](https://github.com/coolsnowwolf/lede)" >> release.txt
+        echo "更新内容:" %s >> release.txt
         echo "感谢所有为openwrt无私奉献的大佬们" >> release.txt
         echo "📥 固件下载" >> release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [NN网盘](${{ steps.cowtransfer.outputs.url }})" >> release.txt
