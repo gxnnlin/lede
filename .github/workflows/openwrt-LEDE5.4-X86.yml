@@ -73,7 +73,8 @@ jobs:
 
     - name: 读取插件
       run: ./scripts/feeds install -a
-
+      useVersionInfo=$(git show -s --date=short --format="编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录:<br/>更新人: %an<br/>更新时间: %cd<br/>更新内容: %s<br/>哈希值: %H")
+      echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
     - name: 固件定制
       run: |
           rm -f ./.config*
@@ -417,7 +418,6 @@ jobs:
         echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
         touch release.txt
         echo "[固件源码](https://github.com/coolsnowwolf/lede)" >> release.txt
-        echo "更新内容:" %s >> release.txt
         echo "感谢所有为openwrt无私奉献的大佬们" >> release.txt
         echo "📥 固件下载" >> release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [NN网盘](${{ steps.cowtransfer.outputs.url }})" >> release.txt
@@ -433,6 +433,7 @@ jobs:
         name: ${{ env.FILE_TIME }} 「 OpenWrt-LEDE5.4-X86-64 」
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
+        ${{ env.useVersionInfo }}
         files: ${{ env.FIRMWARE }}/*
 
     - name: 删除旧的Releases
