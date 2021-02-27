@@ -11,69 +11,73 @@ name: OpenWrt-LEDE5.4-newifi-D2
 on:
   repository_dispatch:
   workflow_dispatch:
-  # schedule:
-  #   - cron: 0 18 */3 * *
-
-env:
-  UPLOAD_BIN_DIR: true
-  UPLOAD_FIRMWARE: true
-  UPLOAD_COWTRANSFER: true
-  UPLOAD_WETRANSFER: true
-  UPLOAD_RELEASE: true
-  TZ: Asia/Shanghai
+  schedule:
+  - cron: 0 18 * * *
 
 jobs:
-  build:
+
+  build_openwrt:
+
+    name: Build OpenWrt firmware D2
+
     runs-on: ubuntu-latest
 
+    if: github.event.repository.owner.id == github.event.sender.id
+
     steps:
-    - name: 检查项目分支
-      uses: actions/checkout@main
 
-    - name: 安装编译环境
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-        sudo -E apt-get -qq update
-        sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-latest)
-        sudo -E apt-get -qq autoremove --purge
-        sudo -E apt-get -qq clean
-        sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
-    - name: 下载固件源码
-      working-directory: /workdir
-      run: |
-        df -hT $PWD
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Space cleanup
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          docker rmi `docker images -q`
+          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
+          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php* android*
+          sudo -E apt-get update
+          sudo -E apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler antlr3 gperf swig libtinfo5
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get clean
+          # sudo mkdir -p -m 777 /mnt/openwrt/bin /mnt/openwrt/build_dir/host /mnt/openwrt/build_dir/hostpkg /mnt/openwrt/dl /mnt/openwrt/feeds /mnt/openwrt/staging_dir
+          # ln -s /mnt/openwrt/bin ./bin
+          # mkdir -p ./build_dir
+          # ln -s -f /mnt/openwrt/build_dir/host ./build_dir/host
+          # ln -s -f /mnt/openwrt/build_dir/hostpkg ./build_dir/hostpkg
+          # ln -s /mnt/openwrt/dl ./dl
+          # ln -s /mnt/openwrt/feeds ./feeds
+          # ln -s /mnt/openwrt/staging_dir ./staging_dir
+          df -h
         
-    - name: 加载自定义插件主题
-      run: |
-       cd package
-       mkdir openwrt-packages
-       cd openwrt-packages
-       git clone https://github.com/gxnnlin/luci-packages.git
-       git clone https://github.com/xiaorouji/openwrt-passwall.git
-       git clone https://github.com/fw876/helloworld.git
-       git clone https://github.com/vernesong/OpenClash.git
-       git clone https://github.com/frainzy1477/luci-app-clash.git
-       git clone https://github.com/destan19/OpenAppFilter.git
-       git clone https://github.com/jerrykuku/luci-app-ttnode.git
-       git clone https://github.com/jerrykuku/luci-app-jd-dailybonus.git
-       git clone https://github.com/jerrykuku/luci-app-vssr.git
-       git clone https://github.com/jerrykuku/lua-maxminddb.git
-       git clone https://github.com/lisaac/luci-app-dockerman.git
-       git clone https://github.com/lisaac/luci-lib-docker.git
-       git clone https://github.com/gxnnlin/luci-app-serverchand.git
-    - name: 下载插件
-      run: ./scripts/feeds update -a
+      - name: 加载自定义插件主题
+        run: |
+         cd package
+         mkdir openwrt-packages
+         cd openwrt-packages
+         git clone https://github.com/gxnnlin/luci-packages.git
+         git clone https://github.com/xiaorouji/openwrt-passwall.git
+         git clone https://github.com/fw876/helloworld.git
+         git clone https://github.com/vernesong/OpenClash.git
+         git clone https://github.com/frainzy1477/luci-app-clash.git
+         git clone https://github.com/destan19/OpenAppFilter.git
+         git clone https://github.com/jerrykuku/luci-app-ttnode.git
+         git clone https://github.com/jerrykuku/luci-app-jd-dailybonus.git
+         git clone https://github.com/jerrykuku/luci-app-vssr.git
+         git clone https://github.com/jerrykuku/lua-maxminddb.git
+         git clone https://github.com/lisaac/luci-app-dockerman.git
+         git clone https://github.com/lisaac/luci-lib-docker.git
+         git clone https://github.com/gxnnlin/luci-app-serverchand.git
+      - name: 下载插件
+        run: ./scripts/feeds update -a
 
-    - name: 读取插件
-      run: ./scripts/feeds install -a
+      - name: 读取插件
+        run: ./scripts/feeds install -a
 
-    - name: 固件定制
-      run: |
+      - name: 固件定制
+        run: |
           rm -f ./.config*
           touch ./.config
           #
@@ -179,37 +183,37 @@ jobs:
           # 
           sed -i 's/^[ \t]*//g' ./.config
           make defconfig
-    - name: 修改自定义配置
-      run: |
-        # 修改openwrt登陆地址,把下面的192.168.6.1修改成你想要的就可以了
-        # sed -i 's/192.168.1.1/192.168.6.1/g' package/base-files/files/bin/config_generate
+      - name: 修改自定义配置
+        run: |
+          # 修改openwrt登陆地址,把下面的192.168.6.1修改成你想要的就可以了
+          # sed -i 's/192.168.1.1/192.168.6.1/g' package/base-files/files/bin/config_generate
        
-        # 修改主机名字，把OpenWrt-1.0修改你喜欢的就行（不能纯数字或者使用中文）
-        # sed -i '/uci commit system/i\uci set system.@system[0].hostname='OpenWrt-1.0'' package/lean/default-settings/files/zzz-default-settings
+          # 修改主机名字，把OpenWrt-1.0修改你喜欢的就行（不能纯数字或者使用中文）
+          # sed -i '/uci commit system/i\uci set system.@system[0].hostname='OpenWrt-1.0'' package/lean/default-settings/files/zzz-default-settings
        
-        # 版本号里显示一个自己的名字（Lan build $(TZ=UTC-8 date "+%Y.%m.%d") @ 这些都是后增加的）
-        sed -i "s/OpenWrt /LEDE $(TZ=UTC-8 date "+%Y%m%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings
+          # 版本号里显示一个自己的名字（Lan build $(TZ=UTC-8 date "+%Y.%m.%d") @ 这些都是后增加的）
+          sed -i "s/OpenWrt /LEDE $(TZ=UTC-8 date "+%Y%m%d") @ OpenWrt /g" package/lean/default-settings/files/zzz-default-settings
        
-        # 修改material为默认主题,可根据你喜欢的修改成其他的（不选择那些会自动改变为默认主题的主题才有效果）
-        sed -i 's/luci-theme-bootstrap/luci-theme-material/g' feeds/luci/collections/luci/Makefile
+          # 修改material为默认主题,可根据你喜欢的修改成其他的（不选择那些会自动改变为默认主题的主题才有效果）
+          sed -i 's/luci-theme-bootstrap/luci-theme-material/g' feeds/luci/collections/luci/Makefile
        
-        # 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
-        # sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz-default-settings
+          # 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
+          # sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz-default-settings
        
-        # 修改插件名字（修改名字后不知道会不会对插件功能有影响，自己多测试）
-        sed -i 's/"网络存储"/"存储"/g' package/lean/luci-app-vsftpd/po/zh-cn/vsftpd.po
-        sed -i 's/"网络存储"/"存储"/g' package/lean/luci-app-usb-printer/po/zh-cn/usb-printer.po
-        sed -i 's/"BaiduPCS Web"/"百度网盘"/g' package/lean/luci-app-baidupcs-web/luasrc/controller/baidupcs-web.lua
-        sed -i 's/"带宽监控"/"带宽"/g' feeds/luci/applications/luci-app-nlbwmon/po/zh-cn/nlbwmon.po
-        sed -i 's/"实时流量监测"/"流量"/g' package/lean/luci-app-wrtbwmon/po/zh-cn/wrtbwmon.po
-    - name: 下载安装包
-      id: package
-      run: |
-        make download -j8 || make download -j1 V=s
+          # 修改插件名字（修改名字后不知道会不会对插件功能有影响，自己多测试）
+          sed -i 's/"网络存储"/"存储"/g' package/lean/luci-app-vsftpd/po/zh-cn/vsftpd.po
+          sed -i 's/"网络存储"/"存储"/g' package/lean/luci-app-usb-printer/po/zh-cn/usb-printer.po
+          sed -i 's/"BaiduPCS Web"/"百度网盘"/g' package/lean/luci-app-baidupcs-web/luasrc/controller/baidupcs-web.lua
+          sed -i 's/"带宽监控"/"带宽"/g' feeds/luci/applications/luci-app-nlbwmon/po/zh-cn/nlbwmon.po
+          sed -i 's/"实时流量监测"/"流量"/g' package/lean/luci-app-wrtbwmon/po/zh-cn/wrtbwmon.po
+      - name: 下载安装包
+        id: package
+        run: |
+         make download -j8 || make download -j1 V=s
           rm -rf $(find ./dl/ -size -1024c)
           df -h
-    - name: Compile firmware
-      run: |
+      - name: Compile firmware
+        run: |
           make -j$(nproc) || make -j1 V=s
           echo "======================="
           echo "Space usage:"
@@ -218,8 +222,8 @@ jobs:
           echo "======================="
           du -h ./ --max-depth=1
           du -h /mnt/openwrt/ --max-depth=1 || true
-    - name: Prepare artifact
-      run: |
+      - name: Prepare artifact
+        run: |
           mkdir -p ./artifact/firmware
           mkdir -p ./artifact/package
           mkdir -p ./artifact/buildinfo
@@ -227,28 +231,28 @@ jobs:
           cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
           cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
           cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
-    - name: Deliver buildinfo
-      uses: actions/upload-artifact@v2
-      with:
+      - name: Deliver buildinfo
+        uses: actions/upload-artifact@v2
+        with:
           name: OpenWrt_buildinfo
           path: ./artifact/buildinfo/
 
-    - name: Deliver package
-      uses: actions/upload-artifact@v2
-      with:
+      - name: Deliver package
+        uses: actions/upload-artifact@v2
+        with:
           name: OpenWrt_package
           path: ./artifact/package/
 
-    - name: Deliver firmware
-      uses: actions/upload-artifact@v2
-      with:
+      - name: Deliver firmware
+        uses: actions/upload-artifact@v2
+        with:
           name: OpenWrt_firmware_AC2100
           path: ./bin/targets/
 
-    - name: Upload release asset
-      if: github.event == 'release'
-      uses: svenstaro/upload-release-action@v2
-      with:
+      - name: Upload release asset
+        if: github.event == 'release'
+        uses: svenstaro/upload-release-action@v2
+        with:
           repo_token: ${{ secrets.YOURTOKEN }}
           file: ./artifact/firmware/*
           tag: ${{ github.ref }}
