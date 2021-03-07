@@ -246,14 +246,14 @@ jobs:
       - name: Deliver firmware
         uses: actions/upload-artifact@v2
         with:
-          name: OpenWrt_firmware_AC2100
+          name: OpenWrt_firmware_newifi-D2
           path: ./bin/targets/
 
       - name: Upload release asset
         if: github.event == 'release'
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.YOURTOKEN }}
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
           file: ./artifact/firmware/*
           tag: ${{ github.ref }}
           file_glob: true
