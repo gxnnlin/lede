@@ -277,6 +277,8 @@ jobs:
           # CONFIG_PACKAGE_luci-app-syncdial=y
           CONFIG_PACKAGE_luci-app-wrtbwmon=y
           CONFIG_PACKAGE_luci-app-serverchand=y
+          CONFIG_PACKAGE_udpxy=y
+          CONFIG_PACKAGE_luci-app-udpxy=y
           EOF
 
           # LuCI主题:
