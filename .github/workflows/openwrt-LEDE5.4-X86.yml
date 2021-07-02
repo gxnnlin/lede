@@ -65,7 +65,7 @@ jobs:
        git clone https://github.com/jerrykuku/lua-maxminddb.git
        git clone https://github.com/lisaac/luci-app-dockerman.git
        git clone https://github.com/lisaac/luci-lib-docker.git
-       git clone https://github.com/gxnnlin/luci-app-serverchand.git
+       git clone https://github.com/zzsj0928/luci-app-pushbot package/luci-app-pushbot
 
     - name: 下载插件
       run: ./scripts/feeds update -a
@@ -276,7 +276,7 @@ jobs:
           # CONFIG_PACKAGE_luci-app-oaf=y
           # CONFIG_PACKAGE_luci-app-syncdial=y
           CONFIG_PACKAGE_luci-app-wrtbwmon=y
-          CONFIG_PACKAGE_luci-app-serverchand=y
+          CONFIG_PACKAGE_luci-app-pushbot=y
           CONFIG_PACKAGE_udpxy=y
           CONFIG_PACKAGE_luci-app-udpxy=y
           EOF
