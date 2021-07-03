@@ -249,7 +249,6 @@ jobs:
           CONFIG_PACKAGE_tvheadend=y
           CONFIG_PACKAGE_luci-app-serverchan=y
           # CONFIG_PACKAGE_luci-app-watchcat=y
-          # CONFIG_PACKAGE_luci-app-udpxy=y
           # CONFIG_PACKAGE_luci-app-frpc=y
           # CONFIG_PACKAGE_luci-app-uhttpd=y
           CONFIG_PACKAGE_luci-app-iptvhelper=y
@@ -273,7 +272,7 @@ jobs:
           CONFIG_PACKAGE_luci-app-pptp-vpnserver=y
           CONFIG_PACKAGE_luci-app-openvpn-server=y
           CONFIG_PACKAGE_luci-app-eqos=y
-          # CONFIG_PACKAGE_luci-app-oaf=y
+          CONFIG_PACKAGE_luci-app-oaf=y
           # CONFIG_PACKAGE_luci-app-syncdial=y
           CONFIG_PACKAGE_luci-app-wrtbwmon=y
           CONFIG_PACKAGE_luci-app-pushbot=y
