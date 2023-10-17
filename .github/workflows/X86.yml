@@ -60,7 +60,7 @@ jobs:
         git clone https://github.com/gxnnlin/openwrt_oscam.git
         git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
-        git clone https://github.com/tianiue/openwrt-passwall.git
+        git clone https://github.com/Mattraks/openwrt-passwall.git
         git clone https://github.com/fw876/helloworld.git
         # git clone https://github.com/vernesong/OpenClash.git
         # git clone https://github.com/frainzy1477/luci-app-clash.git
@@ -74,6 +74,8 @@ jobs:
         # git clone https://github.com/kiddin9/luci-app-dnsfilter.git
         git clone https://github.com/zzsj0928/luci-app-pushbot
         git clone https://github.com/MapesxGM/luci-app-tencentddns.git
+        git clone https://github.com/messense/aliyundrive-webdav.git
+        git clone https://github.com/tianiue/luci-packages/tree/master/luci-app-aliyundrive-webdav.git
     - name: 下载插件
       run: ./scripts/feeds update -a
 
@@ -249,6 +251,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-wrtbwmon=y
         CONFIG_PACKAGE_luci-app-pushbot=y
         CONFIG_PACKAGE_luci-app-tencentddns=y
+        CONFIG_PACKAGE_aliyundrive-webdav=y
         CONFIG_PACKAGE_luci-app-aliyundrive-webdav=y
         EOF
         # LuCI主题:
