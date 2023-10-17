@@ -75,7 +75,7 @@ jobs:
         git clone https://github.com/zzsj0928/luci-app-pushbot
         git clone https://github.com/MapesxGM/luci-app-tencentddns.git
         git clone https://github.com/messense/aliyundrive-webdav.git
-        git clone https://github.com/tianiue/luci-packages/tree/master/luci-app-aliyundrive-webdav.git
+       
     - name: 下载插件
       run: ./scripts/feeds update -a
 
