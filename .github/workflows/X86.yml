@@ -249,6 +249,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-wrtbwmon=y
         CONFIG_PACKAGE_luci-app-pushbot=y
         CONFIG_PACKAGE_luci-app-tencentddns=y
+        CONFIG_PACKAGE_luci-app-aliyundrive-webdav=y
         EOF
         # LuCI主题:
         cat >> .config <<EOF
