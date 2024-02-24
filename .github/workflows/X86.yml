@@ -25,7 +25,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - name: Check disk space
       run: df . -h
@@ -118,11 +118,14 @@ jobs:
       env:
           DEBIAN_FRONTEND: noninteractive
       run: |
-          # grub-efi-amd64-signed dependency issue in Ubuntu 22.04LTS
+          # grub-efi-amd64-signed dependency issue in ubuntu_2204
           # https://askubuntu.com/questions/1338497/grub-crashes-on-apt-upgrade-grub-install-error-cannot-find-efi-directory
           
           #sudo apt purge grub-efi-amd64-signed --allow-remove-essential -y
           #sudo apt install grub-pc
+          
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /etc/mysql /etc/php
+          sudo -E apt-get -y purge azure-cli* docker* ghc* zulu* hhvm* llvm* firefox* google* dotnet* aspnetcore* powershell* openjdk* adoptopenjdk* mysql* php* mongodb* moby* snap* || true
           
           sudo -E apt update -y
           sudo -E apt full-upgrade -y
@@ -144,11 +147,10 @@ jobs:
           sudo chown $USER:$GROUPS $GITHUB_WORKSPACE
     - name: 下载固件源码
       
-      working-directory: ./
+      working-directory: /workdir
       run: |
-          df -hT $PWD
-          git clone $REPO_URL -b $REPO_BRANCH openwrt
-          ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        df -hT $PWD
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
     - name: 加载自定义设置
       run: |
@@ -419,6 +421,15 @@ jobs:
         sed -i 's/"BaiduPCS Web"/"百度网盘"/g' feeds/luci/applications/luci-app-baidupcs-web/luasrc/controller/baidupcs-web.lua
         sed -i 's/"带宽监控"/"带宽"/g' feeds/luci/applications/luci-app-nlbwmon/po/zh-cn/nlbwmon.po
         sed -i 's/"实时流量监测"/"流量"/g' feeds/luci/applications/luci-app-wrtbwmon/po/zh-cn/wrtbwmon.po
+   
+    - name: Cache Toolchain
+      if: env.CACHE_TOOLCHAIN == 'true'
+      uses: HiGarfield/cachewrtbuild@main
+      with:
+        ccache: false
+        mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
+        prefix: ${{ env.OPENWRT_PATH }}
+    
     - name: 下载安装包
       id: package
       run: |
