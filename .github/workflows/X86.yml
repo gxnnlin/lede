@@ -33,7 +33,7 @@ jobs:
         
     - name: Free Disk Space (Ubuntu)
       uses: jlumbroso/free-disk-space@main
-        with:
+      with:
           # this might remove tools that are actually needed,
           # when set to "true" but frees about 6 GB
           tool-cache: false
@@ -47,20 +47,20 @@ jobs:
           swap-storage: true
           
     - name: Check disk space
-        run: |
+      run: |
           df . -h
           echo some package removed
           
     - name: Before freeing up disk space
-        run: |
+      run: |
           echo "Before freeing up disk space"
           echo "=============================================================================="
           df -hT
           echo "=============================================================================="
   
     - name: "Optimize Disk Space"
-        uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.0"
-        with:
+      uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.0"
+      with:
           operate_sudo: "True"
           general_include: ".+"
           general_exclude: |-
@@ -80,8 +80,8 @@ jobs:
           os_swap: "True"
   
     - name: Freeing up disk space
-        uses: easimon/maximize-build-space@master
-        with: 
+      uses: easimon/maximize-build-space@master
+      with: 
           root-reserve-mb: 2048
           swap-size-mb: 1
           remove-dotnet: 'true'
@@ -91,7 +91,7 @@ jobs:
           remove-docker-images: 'true'
   
     - name: Free up disk space complete
-        run: |
+      run: |
           echo "Free up disk space complete"
           echo "=============================================================================="
           df -hT
@@ -99,7 +99,7 @@ jobs:
           
       #=========================================================================================================
     - name: Checkout
-        uses: actions/checkout@main
+      uses: actions/checkout@main
 
     - name: 安装编译环境
       env:
