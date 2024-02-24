@@ -102,9 +102,9 @@ jobs:
       uses: actions/checkout@main
 
     - name: Initialization environment
-        env:
+      env:
           DEBIAN_FRONTEND: noninteractive
-        run: |
+      run: |
           # grub-efi-amd64-signed dependency issue in Ubuntu 22.04LTS
           # https://askubuntu.com/questions/1338497/grub-crashes-on-apt-upgrade-grub-install-error-cannot-find-efi-directory
           
