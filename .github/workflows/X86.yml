@@ -362,7 +362,6 @@ jobs:
         CONFIG_PACKAGE_speedtest-go=y
         CONFIG_PACKAGE_tree=y
         CONFIG_PACKAGE_vim-fuller=y
-        # CONFIG_PACKAGE_wget=y
         CONFIG_PACKAGE_xz=y
         CONFIG_SOCAT_SSL=y
         EOF
