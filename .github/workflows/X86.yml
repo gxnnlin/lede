@@ -30,7 +30,8 @@ jobs:
 
     steps:
     - name: Free Disk Space (Ubuntu)
-  uses: jlumbroso/free-disk-space@main
+      uses: jlumbroso/free-disk-space@main
+  
     - name: 检查项目分支
       uses: actions/checkout@v3
 
