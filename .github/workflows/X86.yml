@@ -29,6 +29,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+    - name: Free Disk Space (Ubuntu)
+  uses: jlumbroso/free-disk-space@main
     - name: 检查项目分支
       uses: actions/checkout@v3
 
