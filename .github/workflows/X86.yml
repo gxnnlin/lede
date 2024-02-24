@@ -130,10 +130,11 @@ jobs:
           #sudo chown $USER:$GROUPS /workdir
           sudo chown $USER:$GROUPS $GITHUB_WORKSPACE
     - name: 下载固件源码
-      working-directory: /workdir
+      working-directory: ./
       run: |
-        df -hT $PWD
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+          df -hT $PWD
+          git clone $REPO_URL -b $REPO_BRANCH openwrt
+          ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
     - name: 加载自定义设置
       run: |
