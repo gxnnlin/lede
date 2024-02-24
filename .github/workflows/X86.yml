@@ -157,6 +157,7 @@ jobs:
         cd package
         mkdir openwrt-packages
         cd openwrt-packages
+        git clone https://github.com/gxnnlin/openwrt-packages
         git clone https://github.com/gxnnlin/luci-packages.git
         git clone https://github.com/gxnnlin/luci-app-oscam.git
         git clone https://github.com/gxnnlin/openwrt_oscam.git
@@ -353,6 +354,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-wrtbwmon=y
         CONFIG_PACKAGE_luci-app-pushbot=y
         CONFIG_PACKAGE_luci-app-tencentddns=y
+        CONFIG_PACKAGE_luci-app-store=y
         EOF
         # LuCI主题:
         cat >> .config <<EOF
