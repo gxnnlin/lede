@@ -159,8 +159,8 @@ jobs:
         cd openwrt-packages
         git clone https://github.com/gxnnlin/openwrt-packages
         git clone https://github.com/gxnnlin/luci-packages.git
-        git clone https://github.com/gxnnlin/luci-app-oscam.git
-        git clone https://github.com/gxnnlin/openwrt_oscam.git
+        # git clone https://github.com/gxnnlin/luci-app-oscam.git
+        # git clone https://github.com/gxnnlin/openwrt_oscam.git
         git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
         git clone https://github.com/Mattraks/openwrt-passwall.git
@@ -300,7 +300,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-argon-config=y
         CONFIG_PACKAGE_luci-app-vssr=y
         CONFIG_PACKAGE_lua-maxminddb=y
-        # CONFIG_PACKAGE_luci-app-passwall=y
+        CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_hysteria=y
         # CONFIG_PACKAGE_luci-app-ttnode=y
         CONFIG_PACKAGE_adguardhome=y
