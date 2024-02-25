@@ -185,8 +185,8 @@ jobs:
         cd openwrt-packages
         git clone https://github.com/gxnnlin/openwrt-packages
         git clone https://github.com/gxnnlin/luci-packages.git
-        git clone https://github.com/gxnnlin/luci-app-oscam.git
-        git clone https://github.com/gxnnlin/openwrt_oscam.git
+        # git clone https://github.com/gxnnlin/luci-app-oscam.git
+        # git clone https://github.com/gxnnlin/openwrt_oscam.git
         git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
         git clone https://github.com/Mattraks/openwrt-passwall.git
