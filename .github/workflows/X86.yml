@@ -431,105 +431,7 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-
-    - name: Compare Toolchain Hash
-      id: hash
-      run: |
-        cd $OPENWRT_PATH
-        export CURRENT_HASH=$(git log --pretty=tformat:"%H" -n1 tools toolchain)
-        echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_ENV
-        echo "CURRENT_HASH is $CURRENT_HASH"
-        export CACHE_HASH=$(curl -fSsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.hash)
-        echo "CACHE_HASH is $CACHE_HASH"
-        if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
-          echo "REBUILD_TOOLCHAIN=true" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Install Feeds
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd $OPENWRT_PATH
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
-
-    - name: Compile Tools
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd $OPENWRT_PATH
-        make defconfig
-        echo -e "$(nproc) thread compile"
-        make tools/compile -j$(nproc) || make tools/compile -j1 V=s
-
-    - name: Compile Toolchain
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd $OPENWRT_PATH
-        echo -e "$(nproc) thread compile"
-        make toolchain/compile -j$(nproc) || make toolchain/compile -j1 V=s
-        rm -rf .config* dl bin
-
-    - name: Generate Toolchain Image
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd /workdir
-        mksquashfs openwrt $TOOLCHAIN_IMAGE -force-gid 1001 -force-uid 1001 -comp zstd
-        mkdir -p $GITHUB_WORKSPACE/output
-        split -d -b 1024M $TOOLCHAIN_IMAGE $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.img.
-        rm $TOOLCHAIN_IMAGE
-        echo $CURRENT_HASH > $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.hash
-        ls -lh $GITHUB_WORKSPACE/output
-
-    - name: Delete Old Toolchain Assets
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      uses: mknejp/delete-release-assets@v1
-      with:
-        token: ${{ secrets.RELEASES_TOKEN }}
-        tag: ${{ env.TOOLCHAIN_TAG }}
-        assets: '${{ env.TOOLCHAIN_IMAGE }}.*'
-        fail-if-no-assets: false
-        fail-if-no-release: false
-
-    - name: Upload Toolchain Image
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      uses: ncipollo/release-action@v1
-      with:
-        name: Toolchain-Image
-        allowUpdates: true
-        tag: ${{ env.TOOLCHAIN_TAG }}
-        token: ${{ secrets.RELEASES_TOKEN }}
-        artifacts: output/*
-        body: OpenWrt 工具链镜像文件
-
-  Build:
-    needs: [Toolchain]
-    runs-on: ubuntu-22.04
-    timeout-minutes: 360 # 防止编译终止
-
-    env:
-      OPENWRT_PATH: ${{ needs.Toolchain.outputs.OPENWRT_PATH }}
-      VERSION_INFO: ${{ needs.Toolchain.outputs.VERSION_INFO }}
-      COMMIT_HASH: ${{ needs.Toolchain.outputs.COMMIT_HASH }}
-      CURRENT_BRANCH: ${{ needs.Toolchain.outputs.CURRENT_BRANCH }}
-      SOURCE_REPO: ${{ needs.Toolchain.outputs.SOURCE_REPO }}
-      DEVICE_TARGET: ${{ needs.Toolchain.outputs.DEVICE_TARGET }}
-      DEVICE_SUBTARGET: ${{ needs.Toolchain.outputs.DEVICE_SUBTARGET }}
-      TOOLCHAIN_IMAGE: ${{ needs.Toolchain.outputs.TOOLCHAIN_IMAGE }}
-
-    steps:
-    - name: Check Server Performance
-      run: |
-        echo "警告⚠"
-        echo "分配的服务器性能有限, 若选择的插件过多, 务必注意CPU性能!"
-        echo -e "已知CPU型号(降序): 7763, 8370C, 8272CL, 8171M, E5-2673 \n"
-        echo "--------------------------CPU信息--------------------------"
-        echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
-        echo -e "CPU核心信息: $(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c) \n"
-        echo "--------------------------内存信息--------------------------"
-        echo "已安装内存详细信息："
-        echo -e "$(sudo lshw -short -C memory | grep GiB) \n"
-        echo "--------------------------硬盘信息--------------------------"
-        echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
-
+    
 
 
         
@@ -545,17 +447,7 @@ jobs:
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
         echo "FILE_TIME=$(date "+%Y年%m月%d日-%H点")" >> $GITHUB_ENV
 
-    - name: Prepare Toolchain Image
-      run: |
-        for i in {0..9}
-        do
-          curl -fsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.img.0$i >> $TOOLCHAIN_IMAGE.img || break
-        done
-        mkdir openwrt-ro openwrt workdir overlay
-        sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
-        sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-        cd openwrt
-        git pull
+    
 
         
     - name: 查看磁盘使用情况
