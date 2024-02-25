@@ -5,9 +5,7 @@
 # Author: P3TERX
 # Blog: https://p3terx.com
 #=================================================
-
 name: LEDE-5.15-X86
-
 on:
   workflow_dispatch:
   schedule:
