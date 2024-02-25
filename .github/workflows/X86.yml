@@ -27,15 +27,7 @@ jobs:
     build:
     runs-on: ubuntu-22.04
 
-    outputs:
-      OPENWRT_PATH: ${{ steps.clone.outputs.OPENWRT_PATH }}
-      VERSION_INFO: ${{ steps.clone.outputs.VERSION_INFO }}
-      COMMIT_HASH: ${{ steps.env.outputs.COMMIT_HASH }}
-      CURRENT_BRANCH: ${{ steps.env.outputs.CURRENT_BRANCH }}
-      SOURCE_REPO: ${{ steps.env.outputs.SOURCE_REPO }}
-      DEVICE_TARGET: ${{ steps.env.outputs.DEVICE_TARGET }}
-      DEVICE_SUBTARGET: ${{ steps.env.outputs.DEVICE_SUBTARGET }}
-      TOOLCHAIN_IMAGE: ${{ steps.env.outputs.TOOLCHAIN_IMAGE }}
+
    
     steps:
     - name: Check disk space
