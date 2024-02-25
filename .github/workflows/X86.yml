@@ -5,7 +5,9 @@
 # Author: P3TERX
 # Blog: https://p3terx.com
 #=================================================
+
 name: LEDE-5.15-X86
+
 on:
   workflow_dispatch:
   schedule:
@@ -22,26 +24,11 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
-    build:
+  build:
     runs-on: ubuntu-22.04
-
-
-   
     steps:
     - name: Check disk space
-      run: |
-        df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
-        cd openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-        echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
-        echo "OPENWRT_PATH=$(echo $PWD)" >> $GITHUB_OUTPUT
-        export VERSION_INFO=$(git show -s --date=short --format="Author: %an<br/>Date: %cd<br/>Commit: %s<br/>Commit HASH: %H")
-        echo "VERSION_INFO=$VERSION_INFO" >> $GITHUB_ENV
-        echo "VERSION_INFO=$(echo $VERSION_INFO)" >> $GITHUB_OUTPUT
-        export COMMIT_HASH=$(git show -s --date=short --format="%H")
-        echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-        echo "COMMIT_HASH=$(echo $COMMIT_HASH)" >> $GITHUB_OUTPUT
+      run: df . -h
 
     - name: Check Server Performance
       run: |
@@ -158,8 +145,6 @@ jobs:
           sudo mkdir -p /workdir
           #sudo chown $USER:$GROUPS /workdir
           sudo chown $USER:$GROUPS $GITHUB_WORKSPACE
-
-          
     - name: 下载固件源码
       
       working-directory: /workdir
@@ -174,8 +159,8 @@ jobs:
         cd openwrt-packages
         git clone https://github.com/gxnnlin/openwrt-packages
         git clone https://github.com/gxnnlin/luci-packages.git
-        # git clone https://github.com/gxnnlin/luci-app-oscam.git
-        # git clone https://github.com/gxnnlin/openwrt_oscam.git
+        git clone https://github.com/gxnnlin/luci-app-oscam.git
+        git clone https://github.com/gxnnlin/openwrt_oscam.git
         git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
         git clone https://github.com/Mattraks/openwrt-passwall.git
@@ -308,18 +293,18 @@ jobs:
         # CONFIG_PACKAGE_luci-app-netdata=y
         CONFIG_PACKAGE_luci-app-webadmin=y
         CONFIG_PACKAGE_luci-app-ttyd=y
-        # CONFIG_PACKAGE_luci-app-wireguard=n
+        CONFIG_PACKAGE_luci-app-wireguard=n
         CONFIG_PACKAGE_luci-app-diskman=y
         CONFIG_PACKAGE_luci-app-autoreboot=n
         CONFIG_PACKAGE_luci-app-autopoweroff=y
         CONFIG_PACKAGE_luci-app-argon-config=y
         CONFIG_PACKAGE_luci-app-vssr=y
-        # CONFIG_PACKAGE_lua-maxminddb=y
-        CONFIG_PACKAGE_luci-app-passwall=y
+        CONFIG_PACKAGE_lua-maxminddb=y
+        # CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_hysteria=y
         # CONFIG_PACKAGE_luci-app-ttnode=y
-        # CONFIG_PACKAGE_adguardhome=y
-        # CONFIG_PACKAGE_luci-app-adguardhome=y
+        CONFIG_PACKAGE_adguardhome=y
+        CONFIG_PACKAGE_luci-app-adguardhome=y
         CONFIG_PACKAGE_luci-app-ssr-plus=y
         CONFIG_PACKAGE_luci-app-jd-dailybonus=y
         CONFIG_PACKAGE_ddnsto=y
@@ -341,8 +326,8 @@ jobs:
         # CONFIG_PACKAGE_luci-app-iptvhelper=y
         # CONFIG_PACKAGE_luci-app-nps=y
         CONFIG_PACKAGE_luci-app-familycloud=y
-        # CONFIG_PACKAGE_luci-lib-docker=y
-        # CONFIG_PACKAGE_luci-app-dockerman=y
+        CONFIG_PACKAGE_luci-lib-docker=y
+        CONFIG_PACKAGE_luci-app-dockerman=y
         # CONFIG_PACKAGE_luci-app-mwan3helper=y
         # CONFIG_PACKAGE_luci-app-kodexplorer=y
         # CONFIG_PACKAGE_luci-app-nfs=y
@@ -446,136 +431,10 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-    
-    - name: Generate Toolchain Config
-      run: |
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_PATH/.config
-        echo "CONFIG_ALL=y" >> $OPENWRT_PATH/.config
-        echo "CONFIG_ALL_NONSHARED=y" >> $OPENWRT_PATH/.config
-        cd $OPENWRT_PATH
-        make defconfig > /dev/null 2>&1
-
-    - name: Generate Variables
-      id: env
-      run: |
-        export CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
-        echo "CURRENT_BRANCH=$CURRENT_BRANCH" >> $GITHUB_ENV
-        echo "CURRENT_BRANCH=$(echo $CURRENT_BRANCH)" >> $GITHUB_OUTPUT
-        cd $OPENWRT_PATH
-        export SOURCE_REPO="$(echo $REPO_URL | awk -F '/' '{print $(NF)}')"
-        echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
-        echo "SOURCE_REPO=$(echo $SOURCE_REPO)" >> $GITHUB_OUTPUT
-        export DEVICE_TARGET=$(cat .config | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
-        echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
-        echo "DEVICE_TARGET=$(echo $DEVICE_TARGET)" >> $GITHUB_OUTPUT
-        export DEVICE_SUBTARGET=$(cat .config | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
-        echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
-        echo "DEVICE_SUBTARGET=$(echo $DEVICE_SUBTARGET)" >> $GITHUB_OUTPUT
-        export TOOLCHAIN_IMAGE="toolchain-$SOURCE_REPO-$REPO_BRANCH-$DEVICE_TARGET-$DEVICE_SUBTARGET"
-        echo "TOOLCHAIN_IMAGE=$TOOLCHAIN_IMAGE" >> $GITHUB_ENV
-        echo "TOOLCHAIN_IMAGE=$(echo $TOOLCHAIN_IMAGE)" >> $GITHUB_OUTPUT
-
-    - name: Compare Toolchain Hash
-      id: hash
-      run: |
-        cd $OPENWRT_PATH
-        export CURRENT_HASH=$(git log --pretty=tformat:"%H" -n1 tools toolchain)
-        echo "CURRENT_HASH=$CURRENT_HASH" >> $GITHUB_ENV
-        echo "CURRENT_HASH is $CURRENT_HASH"
-        export CACHE_HASH=$(curl -fSsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.hash)
-        echo "CACHE_HASH is $CACHE_HASH"
-        if [ -z "$CACHE_HASH" ] || [ "$CURRENT_HASH" != "$CACHE_HASH" ]; then
-          echo "REBUILD_TOOLCHAIN=true" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Install Feeds
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd $OPENWRT_PATH
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
-
-    - name: Compile Tools
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd $OPENWRT_PATH
-        make defconfig
-        echo -e "$(nproc) thread compile"
-        make tools/compile -j$(nproc) || make tools/compile -j1 V=s
-
-    - name: Compile Toolchain
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd $OPENWRT_PATH
-        echo -e "$(nproc) thread compile"
-        make toolchain/compile -j$(nproc) || make toolchain/compile -j1 V=s
-        rm -rf .config* dl bin
-
-    - name: Generate Toolchain Image
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      run: |
-        cd /workdir
-        mksquashfs openwrt $TOOLCHAIN_IMAGE -force-gid 1001 -force-uid 1001 -comp zstd
-        mkdir -p $GITHUB_WORKSPACE/output
-        split -d -b 1024M $TOOLCHAIN_IMAGE $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.img.
-        rm $TOOLCHAIN_IMAGE
-        echo $CURRENT_HASH > $GITHUB_WORKSPACE/output/$TOOLCHAIN_IMAGE.hash
-        ls -lh $GITHUB_WORKSPACE/output
-
-    - name: Delete Old Toolchain Assets
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      uses: mknejp/delete-release-assets@v1
-      with:
-        token: ${{ secrets.ACCESS_TOKEN }}
-        tag: ${{ env.TOOLCHAIN_TAG }}
-        assets: '${{ env.TOOLCHAIN_IMAGE }}.*'
-        fail-if-no-assets: false
-        fail-if-no-release: false
-
-    - name: Upload Toolchain Image
-      if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
-      uses: ncipollo/release-action@v1
-      with:
-        name: Toolchain-Image
-        allowUpdates: true
-        tag: ${{ env.TOOLCHAIN_TAG }}
-        token: ${{ secrets.RELEASES_TOKEN }}
-        artifacts: output/*
-        body: OpenWrt 工具链镜像文件
-
-  Build:
-    needs: [Toolchain]
-    runs-on: ubuntu-22.04
-    timeout-minutes: 360 # 防止编译终止
-
-    env:
-      OPENWRT_PATH: ${{ needs.Toolchain.outputs.OPENWRT_PATH }}
-      VERSION_INFO: ${{ needs.Toolchain.outputs.VERSION_INFO }}
-      COMMIT_HASH: ${{ needs.Toolchain.outputs.COMMIT_HASH }}
-      CURRENT_BRANCH: ${{ needs.Toolchain.outputs.CURRENT_BRANCH }}
-      SOURCE_REPO: ${{ needs.Toolchain.outputs.SOURCE_REPO }}
-      DEVICE_TARGET: ${{ needs.Toolchain.outputs.DEVICE_TARGET }}
-      DEVICE_SUBTARGET: ${{ needs.Toolchain.outputs.DEVICE_SUBTARGET }}
-      TOOLCHAIN_IMAGE: ${{ needs.Toolchain.outputs.TOOLCHAIN_IMAGE }}
-  
-
-
-    steps:
         
     - name: 开始编译固件
       id: compile
       run: |
-
-        for i in {0..9}
-        do
-          curl -fsL https://github.com/$GITHUB_REPOSITORY/releases/download/$TOOLCHAIN_TAG/$TOOLCHAIN_IMAGE.img.0$i >> $TOOLCHAIN_IMAGE.img || break
-        done
-        mkdir openwrt-ro openwrt workdir overlay
-        sudo mount -o loop $TOOLCHAIN_IMAGE.img openwrt-ro
-        sudo mount -t overlay overlay -o lowerdir=openwrt-ro,upperdir=overlay,workdir=workdir openwrt
-        cd openwrt
-        git pull
-      
         echo -e "$(nproc) thread compile"
         curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=开始编译OpenWrt-5.15内核固件&desp=${{ env.DEVICE_NAME }}
         make -j$(nproc) || make -j1 || make -j1 V=s
@@ -584,11 +443,6 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
         echo "FILE_TIME=$(date "+%Y年%m月%d日-%H点")" >> $GITHUB_ENV
-
-
-    
-
-        
     - name: 查看磁盘使用情况
       if: (!cancelled())
       run: df -hT
