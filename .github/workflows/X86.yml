@@ -483,7 +483,7 @@ jobs:
       if: steps.hash.outputs.REBUILD_TOOLCHAIN == 'true'
       uses: mknejp/delete-release-assets@v1
       with:
-        token: ${{ secrets.ACCESS_TOKEN }}
+        token: ${{ secrets.RELEASES_TOKEN }}
         tag: ${{ env.TOOLCHAIN_TAG }}
         assets: '${{ env.TOOLCHAIN_IMAGE }}.*'
         fail-if-no-assets: false
@@ -496,7 +496,7 @@ jobs:
         name: Toolchain-Image
         allowUpdates: true
         tag: ${{ env.TOOLCHAIN_TAG }}
-        token: ${{ secrets.ACCESS_TOKEN }}
+        token: ${{ secrets.RELEASES_TOKEN }}
         artifacts: output/*
         body: OpenWrt 工具链镜像文件
 
