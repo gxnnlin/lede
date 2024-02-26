@@ -374,8 +374,8 @@ jobs:
         CONFIG_PACKAGE_htop=y
         CONFIG_PACKAGE_iperf3=y
         CONFIG_PACKAGE_nano=y
-        CONFIG_PACKAGE_node=y
-        CONFIG_PACKAGE_node-yarn=y
+        # CONFIG_PACKAGE_node=n
+        # CONFIG_PACKAGE_node-yarn=n
         CONFIG_PACKAGE_screen=y
         CONFIG_PACKAGE_speedtest-go=y
         CONFIG_PACKAGE_tree=y
