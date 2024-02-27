@@ -159,14 +159,15 @@ jobs:
         cd openwrt-packages
         git clone https://github.com/gxnnlin/openwrt-packages
         git clone https://github.com/gxnnlin/luci-packages.git
-        # git clone https://github.com/gxnnlin/luci-app-oscam.git
-        # git clone https://github.com/gxnnlin/openwrt_oscam.git
+        git clone https://github.com/gxnnlin/luci-app-oscam.git
+        git clone https://github.com/gxnnlin/luci-packages/tree/master/oscam.git
+        git clone https://github.com/nx111/oscam package/oscam.git
         git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
         git clone https://github.com/Mattraks/openwrt-passwall.git
-        # git clone https://github.com/fw876/helloworld.git
-        # git clone https://github.com/vernesong/OpenClash.git
-        # git clone https://github.com/frainzy1477/luci-app-clash.git
+        git clone https://github.com/fw876/helloworld.git
+        git clone https://github.com/vernesong/OpenClash.git
+        git clone https://github.com/frainzy1477/luci-app-clash.git
         git clone https://github.com/destan19/OpenAppFilter.git
         # git clone https://github.com/jerrykuku/luci-app-ttnode.git
         # git clone https://github.com/linkease/ddnsto-openwrt.git
@@ -310,8 +311,8 @@ jobs:
         CONFIG_PACKAGE_ddnsto=y
         CONFIG_PACKAGE_luci-app-ddnsto=y
         # CONFIG_PACKAGE_luci-app-dnsfilter=y
-        # CONFIG_PACKAGE_luci-app-clash=y
-        # CONFIG_PACKAGE_luci-app-openclash=y
+        CONFIG_PACKAGE_luci-app-clash=y
+        CONFIG_PACKAGE_luci-app-openclash=y
         CONFIG_PACKAGE_smartdns=y
         CONFIG_PACKAGE_luci-app-smartdns=y
         CONFIG_PACKAGE_oscam=y
