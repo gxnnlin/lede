@@ -158,12 +158,12 @@ jobs:
         cd package
         mkdir openwrt-packages
         cd openwrt-packages
-        git clone https://github.com/gxnnlin/openwrt-packages
-        git clone https://github.com/gxnnlin/luci-packages.git
+        git clone https://github.com/gxnnlin/packages.git
+        # git clone https://github.com/gxnnlin/luci-packages.git
         # git clone https://github.com/gxnnlin/luci-app-oscam.git
         # git clone https://github.com/gxnnlin/luci-packages/oscam.git
-        git clone https://github.com/nx111/oscam package/oscam.git
-        git clone https://github.com/gxnnlin/luci-app-netdata.git
+        # git clone https://github.com/nx111/oscam package/oscam.git
+        # git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
         git clone https://github.com/Mattraks/openwrt-passwall.git
         git clone https://github.com/fw876/helloworld.git
@@ -174,12 +174,12 @@ jobs:
         # git clone https://github.com/linkease/ddnsto-openwrt.git
         # git clone https://github.com/jerrykuku/luci-app-vssr.git
         # git clone https://github.com/jerrykuku/lua-maxminddb.git
-        git clone https://github.com/lisaac/luci-app-dockerman.git
-        git clone https://github.com/lisaac/luci-lib-docker.git
+        # git clone https://github.com/lisaac/luci-app-dockerman.git
+        # git clone https://github.com/lisaac/luci-lib-docker.git
         # git clone https://github.com/kiddin9/luci-app-dnsfilter.git
-        git clone https://github.com/zzsj0928/luci-app-pushbot
-        git clone https://github.com/MapesxGM/luci-app-tencentddns.git
-        git clone https://github.com/messense/aliyundrive-webdav.git
+        # git clone https://github.com/zzsj0928/luci-app-pushbot
+        # git clone https://github.com/MapesxGM/luci-app-tencentddns.git
+        # git clone https://github.com/messense/aliyundrive-webdav.git
        
     - name: 下载插件
       run: ./scripts/feeds update -a
