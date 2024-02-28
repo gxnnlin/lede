@@ -160,8 +160,8 @@ jobs:
         cd openwrt-packages
         git clone https://github.com/gxnnlin/openwrt-packages
         git clone https://github.com/gxnnlin/luci-packages.git
-        git clone https://github.com/gxnnlin/luci-app-oscam.git
-        git clone https://github.com/gxnnlin/luci-packages/tree/master/oscam.git
+        # git clone https://github.com/gxnnlin/luci-app-oscam.git
+        # git clone https://github.com/gxnnlin/luci-packages/oscam.git
         git clone https://github.com/nx111/oscam package/oscam.git
         git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
