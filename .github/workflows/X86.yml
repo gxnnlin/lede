@@ -290,9 +290,9 @@ jobs:
         EOF
         # 常用LuCI插件选择:
         cat >> .config <<EOF
-        # CONFIG_PACKAGE_netdata=y
-        # CONFIG_PACKAGE_luci-app-netdata-cn=y
-        # CONFIG_PACKAGE_luci-app-netdata=y
+        CONFIG_PACKAGE_netdata=y
+        CONFIG_PACKAGE_luci-app-netdata-cn=y
+        CONFIG_PACKAGE_luci-app-netdata=y
         CONFIG_PACKAGE_luci-app-webadmin=y
         CONFIG_PACKAGE_luci-app-ttyd=y
         CONFIG_PACKAGE_luci-app-wireguard=n
@@ -305,10 +305,10 @@ jobs:
         CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_hysteria=y
         # CONFIG_PACKAGE_luci-app-ttnode=y
-        CONFIG_PACKAGE_adguardhome=y
-        CONFIG_PACKAGE_luci-app-adguardhome=y
+        # CONFIG_PACKAGE_adguardhome=y
+        # CONFIG_PACKAGE_luci-app-adguardhome=y
         CONFIG_PACKAGE_luci-app-ssr-plus=y
-        CONFIG_PACKAGE_luci-app-jd-dailybonus=y
+        # CONFIG_PACKAGE_luci-app-jd-dailybonus=y
         CONFIG_PACKAGE_ddnsto=y
         CONFIG_PACKAGE_luci-app-ddnsto=y
         # CONFIG_PACKAGE_luci-app-dnsfilter=y
@@ -318,11 +318,11 @@ jobs:
         CONFIG_PACKAGE_luci-app-smartdns=y
         CONFIG_PACKAGE_oscam=y
         CONFIG_PACKAGE_luci-app-oscam=y
-        # CONFIG_PACKAGE_tvheadend=y
+        CONFIG_PACKAGE_tvheadend=y
         CONFIG_PACKAGE_luci-app-serverchan=y
-        CONFIG_PACKAGE_luci-app-uugamebooster=y
+        # CONFIG_PACKAGE_luci-app-uugamebooster=y
         CONFIG_PACKAGE_luci-app-udpxy=y
-        CONFIG_PACKAGE_igmpproxy=y
+        # CONFIG_PACKAGE_igmpproxy=y
         CONFIG_PACKAGE_luci-app-uhttpd=y
         # CONFIG_PACKAGE_luci-app-frpc=y
         # CONFIG_PACKAGE_luci-app-iptvhelper=y
@@ -336,8 +336,8 @@ jobs:
         # CONFIG_PACKAGE_luci-app-verysync=y
         # CONFIG_PACKAGE_luci-app-usb-printer=y
         CONFIG_PACKAGE_luci-app-vsftpd=n
-        CONFIG_PACKAGE_aliyundrive-webdav=y
-        CONFIG_PACKAGE_luci-app-aliyundrive-webdav=y
+        # CONFIG_PACKAGE_aliyundrive-webdav=y
+        # CONFIG_PACKAGE_luci-app-aliyundrive-webdav=y
         # CONFIG_PACKAGE_alist=y
         # CONFIG_PACKAGE_luci-app-alist=y
         # CONFIG_PACKAGE_luci-app-baidupcs-web=y
@@ -350,7 +350,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-pptp-server=y
         CONFIG_PACKAGE_luci-app-openvpn-server=y
         # CONFIG_PACKAGE_luci-app-netspeedtest=y
-        CONFIG_PACKAGE_luci-app-eqos=y
+        # CONFIG_PACKAGE_luci-app-eqos=y
         CONFIG_PACKAGE_luci-app-oaf=y
         CONFIG_PACKAGE_luci-app-syncdial=y
         CONFIG_PACKAGE_luci-app-wrtbwmon=y
@@ -361,7 +361,7 @@ jobs:
         # LuCI主题:
         cat >> .config <<EOF
         CONFIG_PACKAGE_luci-theme-material=y
-        # CONFIG_PACKAGE_luci-theme-argon=y
+        CONFIG_PACKAGE_luci-theme-argon=y
         # CONFIG_PACKAGE_luci-theme-netgear=y
         CONFIG_PACKAGE_luci-theme-argon-leanimg=n
         CONFIG_PACKAGE_luci-theme-edge=y
