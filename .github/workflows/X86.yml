@@ -165,11 +165,11 @@ jobs:
         # git clone https://github.com/nx111/oscam package/oscam.git
         # git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
-        git clone https://github.com/Openwrt-Passwall/openwrt-passwall.git
+        # git clone https://github.com/Openwrt-Passwall/openwrt-passwall.git
         # git clone https://github.com/fw876/helloworld.git
         # git clone https://github.com/vernesong/OpenClash.git
         # git clone https://github.com/frainzy1477/luci-app-clash.git
-        git clone https://github.com/destan19/OpenAppFilter.git
+        # git clone https://github.com/destan19/OpenAppFilter.git
         # git clone https://github.com/jerrykuku/luci-app-ttnode.git
         # git clone https://github.com/linkease/ddnsto-openwrt.git
         # git clone https://github.com/jerrykuku/luci-app-vssr.git
