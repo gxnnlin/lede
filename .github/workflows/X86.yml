@@ -158,15 +158,15 @@ jobs:
         cd package
         mkdir openwrt-packages
         cd openwrt-packages
-        git clone https://github.com/gxnnlin/packages.git
+        git clone https://github.com/gxnnlin/openwrt-packages.git
         # git clone https://github.com/gxnnlin/luci-packages.git
-        # git clone https://github.com/gxnnlin/luci-app-oscam.git
+        git clone https://github.com/gxnnlin/luci-app-oscam.git
         # git clone https://github.com/gxnnlin/luci-packages/oscam.git
-        # git clone https://github.com/nx111/oscam package/oscam.git
+        git clone https://github.com/nx111/oscam package/oscam.git
         # git clone https://github.com/gxnnlin/luci-app-netdata.git
         # git clone https://github.com/tianiue/openwrt-alist.git
-        # git clone https://github.com/Openwrt-Passwall/openwrt-passwall.git
-        # git clone https://github.com/fw876/helloworld.git
+        git clone https://github.com/Openwrt-Passwall/openwrt-passwall.git
+        git clone https://github.com/fw876/helloworld.git
         # git clone https://github.com/vernesong/OpenClash.git
         # git clone https://github.com/frainzy1477/luci-app-clash.git
         # git clone https://github.com/destan19/OpenAppFilter.git
